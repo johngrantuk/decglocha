@@ -7,14 +7,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       topic: 'Please load again',
-      messages: [
-        {
-          author: "did:3:bafyreig725iek2y2segb2stom3s6tkfhv7kweneb4d4esa6omkkoi3ycom",
-          message: "Test Post",
-          postId: 'zdpuApB5LgEe8HPZHXTJ2wtihGgz21UXtvSbru3YaeL6ZNWCt',
-          timestamp: 1567973188
-        }
-      ]
+      messages: []
     };
 
     this.auth3Box = this.auth3Box.bind(this);
@@ -98,12 +91,17 @@ class App extends React.Component {
     // Closes 3Box session
     this.state.box.logout();
     this.setState({
+      messages: [],
       isAuthenticated: false
     })
   }
 
   render (){
-    let authenticate = <button className="btn btn-primary" onClick={this.auth3Box}>AUTH YOUR 3BOX</button>
+    let authenticate =
+      <div>
+        <h2>Decentralised chat for {this.state.topic}.</h2>
+        <button className="btn btn-primary" onClick={this.auth3Box}>AUTH YOUR 3BOX</button>
+      </div>
     let messages;
     let addPost;
     messages = this.state.messages.map(k => {
@@ -121,9 +119,6 @@ class App extends React.Component {
 
     return (
       <div>
-        <h2>Page Name - {this.state.topic}</h2>
-        <h3>List of users? {this.state.members}</h3>
-
         {authenticate}
         <p/>
 
