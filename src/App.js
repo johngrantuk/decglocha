@@ -5,6 +5,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      topic: 'Please load again',
       messages: [
         {
           name: 'GG',
@@ -18,6 +19,16 @@ class App extends React.Component {
     };
   }
 
+  componentDidMount() {
+    console.log(this.props);
+    var urlParams = new URLSearchParams(window.location.search);
+
+    if(urlParams.has('topic')){
+      this.setState({topic: urlParams.get('topic')});
+    }
+  }
+
+
   render (){
 
     let messages;
@@ -30,8 +41,8 @@ class App extends React.Component {
 
     return (
       <div>
-        <h1>Gecko Chat</h1>
-        <h2>Page Name (Domain?)</h2>
+        <h1>Decglocha</h1>
+        <h2>Page Name - {this.state.topic}</h2>
         <h3>List of users?</h3>
 
         {messages}
