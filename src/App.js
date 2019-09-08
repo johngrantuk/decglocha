@@ -41,7 +41,6 @@ class App extends React.Component {
 
     return (
       <div>
-        <h1>Decglocha</h1>
         <h2>Page Name - {this.state.topic}</h2>
         <h3>List of users?</h3>
 
