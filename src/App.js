@@ -1,4 +1,5 @@
 import React from 'react';
+const Box = require('3box');
 
 class App extends React.Component {
 
@@ -17,6 +18,8 @@ class App extends React.Component {
         }
       ]
     };
+
+    this.auth3Box = this.auth3Box.bind(this);
   }
 
   componentDidMount() {
@@ -28,6 +31,22 @@ class App extends React.Component {
     }
   }
 
+  boxSyncComplete(){
+    // When you first authenticate the user's 3Box, all data might not be synced from the network yet.
+    console.log('Oh yeah synchd for action');
+    this.setState({isAuthenticated: true});
+  }
+
+  async auth3Box(){
+    // First we need to get the ethereum provider & user address
+    const accounts = await window.ethereum.enable();
+    console.log(accounts[0]);
+
+    // Then we initialize a new 3Box session
+    const box = await Box.openBox(accounts[0], window.ethereum);
+    this.setState({box: box});
+    box.onSyncDone(this.boxSyncComplete);       // When you first authenticate the user's 3Box, all data might not be synced from the network yet.
+  }
 
   render (){
 
@@ -43,6 +62,8 @@ class App extends React.Component {
       <div>
         <h2>Page Name - {this.state.topic}</h2>
         <h3>List of users?</h3>
+
+        <button className="btn btn-primary" onClick={this.auth3Box}>AUTH YOUR 3BOX</button>
 
         {messages}
 
