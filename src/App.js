@@ -124,13 +124,15 @@ class App extends React.Component {
     let authenticate =
       <div>
         <h2>Decentralised Chat & Trading For Any Webpage</h2>
-        <div>This extension uses AirSwap Trader allow you to buy or sell any token and 3Box for decentralised messaging.</div>
+        <div>This extension uses AirSwap Trader to allow you to buy or sell any token and 3Box for decentralised messaging.</div>
         <p></p>
-        <div>Click below to get started, if you haven't used 3Box before it will automatically set up your account for free.</div>
-        <button className="btn btn-primary" onClick={this.auth3Box}>AUTHORISE<br/>{this.state.topic}</button>
+        <div>Click below to get started. If you haven't used 3Box before it will automatically set up your account for free.</div>
+        <button className="btn btn-primary" onClick={this.auth3Box}>LOAD<br/>{this.state.topic}</button>
       </div>
     let messages;
     let addPost;
+
+    /*
     messages = this.state.messages.map(k => {
 
         return <div>
@@ -140,6 +142,23 @@ class App extends React.Component {
                   <h5>{k.message}</h5>
                </div>
       });
+    */
+    messages = this.state.messages.map(k => {
+      return <div>
+            <div class="row">
+                <div class="col-lg-12">
+                  <ProfileHover address={k.ethAddr} showName={true} displayFull={true}/>
+                  <span class="small float-right">{k.timestamp}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                  <p class="message">{k.message}</p>
+                </div>
+            </div>
+            <hr class="message-hr"/>
+            </div>
+    })
 
     if(this.state.isAuthenticated){
       authenticate =
@@ -149,7 +168,6 @@ class App extends React.Component {
         </div>
       addPost =
         <div>
-          <hr/>
           <input
             name="website"
             type="text"
