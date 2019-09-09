@@ -62,8 +62,8 @@ class App extends React.Component {
     })
 
     console.log('Thread created: ' + this.state.topic);
+    thread.onUpdate(() => this.GetPosts());
     this.setState({thread: thread});
-
     this.GetPosts();
   }
 
@@ -83,12 +83,24 @@ class App extends React.Component {
     for (var i = 0; i < arrayLength; i++) {
       var doc = await resolve(posts[i].author);
       var ethAddr = doc.publicKey[2].ethereumAddress;
+
+      var a = new Date(posts[i].timestamp * 1000);
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var year = a.getFullYear();
+      var month = months[a.getMonth()];
+      var date = a.getDate();
+      var hour = a.getHours();
+      var min = "0" + a.getMinutes();
+      var sec = "0" + a.getSeconds();
+      var datetime = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min.substr(-2) + ':' + sec.substr(-2);
+
       postsWithAddress.push({
         ethAddr: ethAddr,
         author: posts[i].author,
         message: posts[i].message,
         postId: posts[i].postId,
-        timestamp: posts[i].timestamp
+        timestamp: posts[i].timestamp,
+        datetime: datetime
       })
     }
 
@@ -148,7 +160,7 @@ class App extends React.Component {
             <div class="row">
                 <div class="col-lg-12">
                   <ProfileHover address={k.ethAddr} showName={true} displayFull={true}/>
-                  <span class="small float-right">{k.timestamp}</span>
+                  <span class="small float-right">{k.datetime}</span>
                 </div>
             </div>
             <div class="row">
