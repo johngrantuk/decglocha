@@ -115,7 +115,10 @@ class App extends React.Component {
 
     // Then we initialize a new 3Box session
     const box = await Box.openBox(accounts[0], window.ethereum);
-    this.setState({box: box});
+    this.setState({
+      account: accounts[0],
+      box: box
+    });
     box.onSyncDone(this.boxSyncComplete);       // When you first authenticate the user's 3Box, all data might not be synced from the network yet.
   }
 
@@ -139,22 +142,11 @@ class App extends React.Component {
         <div>This extension uses AirSwap Trader to allow you to buy or sell any token and 3Box for decentralised messaging.</div>
         <p></p>
         <div>Click below to get started. If you haven't used 3Box before it will automatically set up your account for free.</div>
-        <button className="btn btn-primary" onClick={this.auth3Box}>LOAD<br/>{this.state.topic}</button>
+        <div className="text-center"><button className="btn btn-primary" onClick={this.auth3Box}>LOAD<br/>{this.state.topic}</button></div>
       </div>
     let messages;
     let addPost;
 
-    /*
-    messages = this.state.messages.map(k => {
-
-        return <div>
-                  <ProfileHover address={k.ethAddr} tileStyle={true} showName={true}/>
-                  <h4>{k.timestamp}</h4>
-                  <h4>{k.author}</h4>
-                  <h5>{k.message}</h5>
-               </div>
-      });
-    */
     messages = this.state.messages.map(k => {
       return <div>
             <div class="row">
@@ -173,11 +165,12 @@ class App extends React.Component {
     })
 
     if(this.state.isAuthenticated){
-      authenticate =
-        <div>
-          <button className="btn btn-primary" onClick={this.Logout3Box}>Logout 3Box</button>
-          <hr/>
-        </div>
+      authenticate = <div>
+                        <h3>You're Logged In To {this.state.topic}</h3>
+                        <button className="btn btn-primary" onClick={this.Logout3Box}>Logout</button>
+                        <hr/>
+                    </div>;
+
       addPost =
         <div>
           <input
