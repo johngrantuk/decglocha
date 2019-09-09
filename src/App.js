@@ -1,5 +1,9 @@
 import React from 'react';
+import ProfileHover from 'profile-hover';
+import resolve from 'did-resolver';
+
 const Box = require('3box');
+
 
 class App extends React.Component {
 
@@ -16,6 +20,7 @@ class App extends React.Component {
     this.openSpace = this.openSpace.bind(this);
     this.spaceSyncComplete = this.spaceSyncComplete.bind(this);
     this.addPost = this.addPost.bind(this);
+    this.updatePost = this.updatePost.bind(this);
   }
 
   componentDidMount() {
@@ -64,16 +69,31 @@ class App extends React.Component {
 
   async addPost(){
     var Post = "Test Post";
-    console.log('Adding Post: ' + Post)
-    await this.state.thread.post(Post);
+    console.log('Adding Post: ' + this.state.post)
+    await this.state.thread.post(this.state.post);
     this.GetPosts();
   }
 
   async GetPosts(){
     const posts = await this.state.thread.getPosts();
     console.log('Posts:');
-    console.log(posts);
-    this.setState({messages: posts});
+
+    var arrayLength = posts.length;
+    var postsWithAddress = [];
+    for (var i = 0; i < arrayLength; i++) {
+      var doc = await resolve(posts[i].author);
+      var ethAddr = doc.publicKey[2].ethereumAddress;
+      postsWithAddress.push({
+        ethAddr: ethAddr,
+        author: posts[i].author,
+        message: posts[i].message,
+        postId: posts[i].postId,
+        timestamp: posts[i].timestamp
+      })
+    }
+
+    console.log(postsWithAddress);
+    this.setState({messages: postsWithAddress});
   }
 
   async auth3Box(){
@@ -96,16 +116,25 @@ class App extends React.Component {
     })
   }
 
+  updatePost(event) {
+    this.setState({post: event.target.value});
+  }
+
   render (){
     let authenticate =
       <div>
-        <h2>Decentralised chat for {this.state.topic}.</h2>
-        <button className="btn btn-primary" onClick={this.auth3Box}>AUTH YOUR 3BOX</button>
+        <h2>Decentralised Chat & Trading For Any Webpage</h2>
+        <div>This extension uses AirSwap Trader allow you to buy or sell any token and 3Box for decentralised messaging.</div>
+        <p></p>
+        <div>Click below to get started, if you haven't used 3Box before it will automatically set up your account for free.</div>
+        <button className="btn btn-primary" onClick={this.auth3Box}>AUTHORISE<br/>{this.state.topic}</button>
       </div>
     let messages;
     let addPost;
     messages = this.state.messages.map(k => {
+
         return <div>
+                  <ProfileHover address={k.ethAddr} tileStyle={true} showName={true}/>
                   <h4>{k.timestamp}</h4>
                   <h4>{k.author}</h4>
                   <h5>{k.message}</h5>
@@ -113,8 +142,25 @@ class App extends React.Component {
       });
 
     if(this.state.isAuthenticated){
-      authenticate = <button className="btn btn-primary" onClick={this.Logout3Box}>Logout 3Box</button>;
-      addPost = <button className="btn btn-primary" onClick={this.addPost}>Add Post</button>;
+      authenticate =
+        <div>
+          <button className="btn btn-primary" onClick={this.Logout3Box}>Logout 3Box</button>
+          <hr/>
+        </div>
+      addPost =
+        <div>
+          <hr/>
+          <input
+            name="website"
+            type="text"
+            className="edit__profile__value"
+            value={this.state.postMsg}
+            placeholder="Type your message here..."
+            onChange={this.updatePost}
+          />
+          <p/>
+          <button className="btn btn-primary" onClick={this.addPost}>Add Post</button>
+        </div>
     }
 
     return (
