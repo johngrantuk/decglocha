@@ -11,7 +11,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       topic: 'Please load again',
-      messages: []
+      messages: [],
+      spinner: { display: 'none' }
     };
 
     this.auth3Box = this.auth3Box.bind(this);
@@ -35,7 +36,9 @@ class App extends React.Component {
   boxSyncComplete(){
     // When you first authenticate the user's 3Box, all data might not be synced from the network yet.
     console.log('Oh yeah synchd for action');
-    this.setState({isAuthenticated: true});
+    this.setState({
+      isAuthenticated: true
+    });
     this.openSpace();
   }
 
@@ -46,10 +49,6 @@ class App extends React.Component {
   }
 
   async openSpace(){
-
-    if(this.state.topic === 'Please load again'){
-      console.log('Check Topic URL!')
-    }
 
     // If the user already has a space with this name, your application will gain access to it; if the user does not have the space, this method will automatically create one for them.
     const space = await this.state.box.openSpace('decglocha', { onSyncDone: this.spaceSyncComplete });
@@ -105,10 +104,16 @@ class App extends React.Component {
     }
 
     console.log(postsWithAddress);
-    this.setState({messages: postsWithAddress});
+    this.setState({
+      messages: postsWithAddress,
+      spinner: { display: 'none'}
+    });
   }
 
   async auth3Box(){
+    this.setState({
+      spinner: { display: 'block' }
+    });
     // First we need to get the ethereum provider & user address
     const accounts = await window.ethereum.enable();
     console.log(accounts[0]);
@@ -136,14 +141,28 @@ class App extends React.Component {
   }
 
   render (){
-    let authenticate =
-      <div>
-        <h2>Decentralised Chat & Trading For Any Webpage</h2>
-        <div>This extension uses AirSwap Trader to allow you to buy or sell any token and 3Box for decentralised messaging.</div>
-        <p></p>
-        <div>Click below to get started. If you haven't used 3Box before it will automatically set up your account for free.</div>
-        <div className="text-center"><button className="btn btn-primary" onClick={this.auth3Box}>LOAD<br/>{this.state.topic}</button></div>
-      </div>
+
+    let authenticate;
+
+    if(this.state.topic === 'Please load again'){
+      authenticate =
+        <div>
+          <h2>Decentralised Chat & Trading For Any Webpage</h2>
+          <div>This extension uses AirSwap Trader to allow you to buy or sell any token and 3Box for decentralised messaging.</div>
+          <p>Visit Any Webpage To Give It A Shot</p>
+
+        </div>
+    }else{
+      authenticate =
+        <div>
+          <h2>Decentralised Chat & Trading For Any Webpage</h2>
+          <div>This extension uses AirSwap Trader to allow you to buy or sell any token and 3Box for decentralised messaging.</div>
+          <p></p>
+          <div>Click below to get started. If you haven't used 3Box before it will automatically set up your account for free.</div>
+          <div className="text-center"><button className="btn btn-primary" onClick={this.auth3Box}>LOAD<br/>{this.state.topic}</button></div>
+        </div>
+    }
+
     let messages;
     let addPost;
 
@@ -188,12 +207,14 @@ class App extends React.Component {
 
     return (
       <div>
+        <div id="cover-spin" style={this.state.spinner}></div>
         {authenticate}
         <p/>
 
         {messages}
         {addPost}
       </div>
+
     )
   }
 }
