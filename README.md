@@ -1,8 +1,8 @@
 # Add Decentralised Chat & Trading To Any Webpage
 
-This React App is part of my entry to the Ethereal Blocks hackathon. The complete entry provides a browser extension/add-on that allows any webpage to have decentralised chat and trade functions.
+This React App is part of my entry to the Ethereal Blocks hackathon. The complete entry provides a browser extension/add-on that allows any webpage to have decentralised chat and trade functions. See the Extension repo along with install instructions [here](https://github.com/johngrantuk/decglocha-extension).
 
-Animated gif
+![Demo Gif](Decglocha.gif)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
